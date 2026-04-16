@@ -42,14 +42,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                     </button>
                   </div>
                 </>
-              ) : (
-                <button
-                  onClick={login}
-                  className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                >
-                  登录开始训练
-                </button>
-              )}
+              ) : null}
             </div>
           </div>
         </div>

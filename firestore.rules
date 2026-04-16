@@ -65,11 +65,11 @@ service cloud.firestore {
     // ===============================================================
 
     match /sentences/{sentenceId} {
-      // Anyone authenticated can read sentences
-      allow read: if isAuthenticated();
-      // Users can create sentences (authorId must match their uid or be 'system' for AI cache)
-      allow create: if isAuthenticated() && isValidSentence() && 
-                    (request.resource.data.authorId == request.auth.uid || request.resource.data.authorId == 'system');
+      // Anyone can read sentences (for random drawing)
+      allow read: if true;
+      // Anyone can create cache if it is marked as 'system' authored, or if authenticated and it's theirs
+      allow create: if isValidSentence() && 
+                    ((isAuthenticated() && request.resource.data.authorId == request.auth.uid) || request.resource.data.authorId == 'system');
       // Users can update their own sentences
       allow update: if isAuthenticated() && isValidSentence() && resource.data.authorId == request.auth.uid && request.resource.data.authorId == request.auth.uid;
       allow delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;

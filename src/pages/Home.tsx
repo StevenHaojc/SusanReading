@@ -63,23 +63,6 @@ export default function Home() {
     }
   };
 
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6">
-          <Sparkles className="w-10 h-10" />
-        </div>
-        <h1 className="text-3xl font-bold text-slate-800 mb-4">欢迎来到长难句训练营</h1>
-        <p className="text-slate-500 max-w-md mb-8">
-          登录后即可开始随机抽取雅思真题长难句，记录你的学习进度，并建立专属错题本。
-        </p>
-        <div className="bg-emerald-50 text-emerald-700 px-6 py-4 rounded-2xl border border-emerald-100 font-medium">
-          请点击右上角的“登录”按钮开始学习之旅 ✨
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-8">
       {/* Action Area - Separate Row */}

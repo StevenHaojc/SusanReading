@@ -31,42 +31,30 @@ function NodeItem({ node, depth = 0 }: NodeItemProps) {
   const colorClass = labelColors[node.label] || 'bg-slate-50 text-slate-600 border-slate-200';
 
   return (
-    <div className="flex flex-col">
-      <div 
-        className={`group relative flex items-start gap-3 p-3 rounded-xl border transition-all duration-200 ${
-          isExpanded ? 'mb-2' : 'mb-0'
-        } ${colorClass} hover:shadow-md`}
-      >
-        {/* Connection Line for children */}
-        {depth > 0 && (
-          <div className="absolute -left-6 top-1/2 w-6 h-px bg-slate-200" />
-        )}
-
-        <div className="flex-shrink-0 mt-1">
-          {hasChildren ? (
-            <button 
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="p-1 hover:bg-white/50 rounded-md transition-colors"
-            >
-              {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-            </button>
+    <div className={`p-3 rounded-2xl border flex flex-col gap-2 transition-all duration-300 hover:shadow-sm ${colorClass}`}>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-black uppercase tracking-wider bg-white/60 px-2 py-1 rounded-md shrink-0">
+            {node.label}
+          </span>
+          {(!hasChildren || !isExpanded) ? (
+            <span className="text-sm font-medium leading-relaxed">
+              {node.text}
+            </span>
           ) : (
-            <div className="w-6 h-6 flex items-center justify-center">
-              <div className="w-1.5 h-1.5 rounded-full bg-current opacity-40" />
-            </div>
+            <span className="text-xs font-medium opacity-60 truncate max-w-[200px]" title={node.text}>
+              {node.text}
+            </span>
           )}
         </div>
-
-        <div className="flex-grow">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-black uppercase tracking-widest opacity-80">
-              {node.label}
-            </span>
-          </div>
-          <div className="text-sm md:text-base font-medium leading-relaxed">
-            {node.text}
-          </div>
-        </div>
+        {hasChildren && (
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="p-1 hover:bg-white/50 rounded-md transition-colors shrink-0"
+          >
+            {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+          </button>
+        )}
       </div>
 
       <AnimatePresence>
@@ -75,11 +63,15 @@ function NodeItem({ node, depth = 0 }: NodeItemProps) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="ml-8 border-l-2 border-slate-100 pl-6 space-y-2"
+            className="overflow-hidden"
           >
-            {node.children!.map((child) => (
-              <NodeItem key={child.id} node={child} depth={depth + 1} />
-            ))}
+            <div className="flex flex-row flex-wrap gap-2 pt-3 mt-1 border-t border-current/10 items-stretch">
+              {node.children!.map((child) => (
+                <div key={child.id} className="flex-auto min-w-0 max-w-full">
+                  <NodeItem node={child} depth={depth + 1} />
+                </div>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

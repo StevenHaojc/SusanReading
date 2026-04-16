@@ -68,20 +68,22 @@ export default function Home() {
       {/* Action Area - Separate Row */}
       {!analysis && !loading && (
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-emerald-100 flex flex-col items-center justify-center text-center min-h-[300px]">
+           <div className="bg-white p-8 rounded-2xl shadow-sm border border-emerald-100 flex flex-col items-center justify-center text-center min-h-[300px]">
             <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
               <Shuffle className="w-8 h-8" />
             </div>
             <h2 className="text-xl font-bold text-slate-800 mb-2">随机抽取</h2>
             <p className="text-slate-500 mb-6">从剑桥雅思题库中随机抽取一句高难度长难句</p>
-            <button
-              onClick={handleRandomDraw}
-              disabled={loading}
-              className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-full font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
-            >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Shuffle className="w-5 h-5" />}
-              {loading ? '抽取中...' : '抽取一句'}
-            </button>
+            <div className="flex flex-col items-center gap-3">
+              <button
+                onClick={handleRandomDraw}
+                disabled={loading}
+                className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-full font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
+              >
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Shuffle className="w-5 h-5" />}
+                {loading ? '抽取中...' : '抽取一句'}
+              </button>
+            </div>
           </div>
 
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-emerald-100 flex flex-col items-center justify-center text-center min-h-[300px]">
@@ -131,9 +133,16 @@ export default function Home() {
           {/* Sentence Focus */}
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-emerald-100 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-2 h-full bg-emerald-500" />
-            <h3 className="text-sm font-bold text-emerald-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-              <BookOpen className="w-4 h-4" /> Original Sentence
-            </h3>
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+              <h3 className="text-sm font-bold text-emerald-500 uppercase tracking-wider flex items-center gap-2">
+                <BookOpen className="w-4 h-4" /> Original Sentence
+              </h3>
+              {analysis.source && (
+                <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-xs font-bold font-mono border border-emerald-100">
+                  {analysis.source}
+                </span>
+              )}
+            </div>
             <p className="text-2xl font-medium text-slate-800 leading-relaxed mb-2">
               {analysis.text}
             </p>

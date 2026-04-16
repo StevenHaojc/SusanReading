@@ -1,0 +1,99 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function validStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+        request.resource.data[field].size() >= minLen &&
+        request.resource.data[field].size() <= maxLen;
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidSentence() {
+      return hasRequiredFields(['text', 'translation', 'source', 'authorId']) &&
+             validStringLength('text', 1, 5000) &&
+             validStringLength('translation', 1, 5000) &&
+             validStringLength('source', 1, 200) &&
+             validStringLength('authorId', 1, 100);
+    }
+
+    function isValidLearningRecord() {
+      return hasRequiredFields(['userId', 'sentenceId', 'status']) &&
+             validStringLength('userId', 1, 100) &&
+             validStringLength('sentenceId', 1, 100) &&
+             request.resource.data.status in ['learning', 'mastered', 'difficult'];
+    }
+
+    function isValidMistake() {
+      return hasRequiredFields(['userId', 'sentenceId', 'notes', 'reviewCount']) &&
+             validStringLength('userId', 1, 100) &&
+             validStringLength('sentenceId', 1, 100) &&
+             request.resource.data.reviewCount is number &&
+             request.resource.data.reviewCount >= 0;
+    }
+
+    function isValidDailyGoal() {
+      return hasRequiredFields(['userId', 'date', 'targetCount', 'completedCount']) &&
+             validStringLength('userId', 1, 100) &&
+             validStringLength('date', 1, 20) &&
+             request.resource.data.targetCount is number &&
+             request.resource.data.targetCount >= 0 &&
+             request.resource.data.completedCount is number &&
+             request.resource.data.completedCount >= 0;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /sentences/{sentenceId} {
+      // Anyone authenticated can read sentences
+      allow read: if isAuthenticated();
+      // Users can create sentences (authorId must match their uid or be 'system' for AI cache)
+      allow create: if isAuthenticated() && isValidSentence() && 
+                    (request.resource.data.authorId == request.auth.uid || request.resource.data.authorId == 'system');
+      // Users can update their own sentences
+      allow update: if isAuthenticated() && isValidSentence() && resource.data.authorId == request.auth.uid && request.resource.data.authorId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
+    }
+
+    match /learning_records/{recordId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidLearningRecord() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && isValidLearningRecord() && resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    match /mistakes/{mistakeId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidMistake() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && isValidMistake() && resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    match /daily_goals/{goalId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && isValidDailyGoal() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && isValidDailyGoal() && resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+  }
+}

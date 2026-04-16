@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "Sentence": {
+      "title": "Sentence",
+      "description": "An IELTS long and complex sentence",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string", "description": "The original English sentence" },
+        "translation": { "type": "string", "description": "Chinese translation" },
+        "source": { "type": "string", "description": "Source of the sentence, e.g., Cambridge 18 Test 1" },
+        "grammarAnalysis": { "type": "string", "description": "JSON string of grammar tree" },
+        "vocabulary": { "type": "string", "description": "JSON string of vocabulary list" },
+        "explanation": { "type": "string", "description": "Step-by-step explanation" },
+        "authorId": { "type": "string", "description": "User ID of the uploader, or 'system' for global" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["text", "translation", "source", "authorId"]
+    },
+    "LearningRecord": {
+      "title": "Learning Record",
+      "description": "A user's learning record for a sentence",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "sentenceId": { "type": "string" },
+        "sentenceText": { "type": "string" },
+        "status": { "type": "string", "enum": ["learning", "mastered", "difficult"] },
+        "completedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "sentenceId", "status"]
+    },
+    "Mistake": {
+      "title": "Mistake",
+      "description": "A user's mistake book entry",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "sentenceId": { "type": "string" },
+        "sentenceText": { "type": "string" },
+        "notes": { "type": "string" },
+        "reviewCount": { "type": "number" },
+        "lastReviewedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "sentenceId", "notes", "reviewCount"]
+    },
+    "DailyGoal": {
+      "title": "Daily Goal",
+      "description": "User's daily learning goal progress",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "date": { "type": "string", "description": "YYYY-MM-DD format" },
+        "targetCount": { "type": "number" },
+        "completedCount": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "date", "targetCount", "completedCount"]
+    }
+  },
+  "firestore": {
+    "sentences": {
+      "schema": { "$ref": "#/entities/Sentence" },
+      "description": "Global pool of IELTS sentences"
+    },
+    "learning_records": {
+      "schema": { "$ref": "#/entities/LearningRecord" },
+      "description": "User learning records"
+    },
+    "mistakes": {
+      "schema": { "$ref": "#/entities/Mistake" },
+      "description": "User mistake book"
+    },
+    "daily_goals": {
+      "schema": { "$ref": "#/entities/DailyGoal" },
+      "description": "User daily goals"
+    }
+  }
+}

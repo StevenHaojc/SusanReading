@@ -65,6 +65,21 @@ export default function Home() {
 
   return (
     <div className="space-y-8">
+      {/* Banner Button */}
+      <div className="bg-gradient-to-r from-orange-500 to-rose-500 rounded-2xl p-1 shadow-lg shadow-orange-200/50">
+        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-white">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <span className="text-3xl">✍️</span> 全新上线：雅思大作文学习卡片
+            </h2>
+            <p className="text-orange-50 mt-1">覆盖10大高频话题，底层逻辑+高分短语句型一网打尽</p>
+          </div>
+          <a href="/writing" className="bg-white text-orange-600 px-6 py-3 rounded-xl font-bold text-lg shadow-sm hover:shadow-md hover:bg-orange-50 transition-all flexitems-center gap-2 flex-shrink-0">
+            马上开始练习 →
+          </a>
+        </div>
+      </div>
+
       {/* Action Area - Separate Row */}
       {!analysis && !loading && (
         <div className="grid md:grid-cols-2 gap-6">

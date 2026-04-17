@@ -4,11 +4,12 @@
  */
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { BookOpen, History, LogOut, Sparkles } from 'lucide-react';
+import { BookOpen, History, LogOut, Sparkles, PenTool } from 'lucide-react';
 import Home from './pages/Home';
 import MistakeBook from './pages/MistakeBook';
+import Writing from './pages/Writing';
 
 function Layout({ children }: { children: React.ReactNode }) {
   const { user, login, logout } = useAuth();
@@ -25,6 +26,10 @@ function Layout({ children }: { children: React.ReactNode }) {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
+              <Link to="/writing" className="text-orange-600 hover:text-orange-700 flex items-center px-3 py-2 rounded-md text-sm font-medium bg-orange-50 mr-2">
+                <PenTool className="h-4 w-4 mr-1" />
+                雅思大作文学习卡片
+              </Link>
               {user ? (
                 <>
                   <Link to="/" className="text-slate-600 hover:text-emerald-600 flex items-center px-3 py-2 rounded-md text-sm font-medium">
@@ -62,6 +67,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/mistakes" element={<MistakeBook />} />
+            <Route path="/writing" element={<Writing />} />
           </Routes>
         </Layout>
       </Router>
